@@ -82,13 +82,6 @@ main = do
     while (/= DeadState) runTootyFSM initialState
     putStrLn "The end!"
 
-getCharAction :: IO Char
-getCharAction = do
-    x <- getChar
-    putStrLn $ "The value read is: " ++ [x]
-    return x
-
-
 while :: (a -> Bool) -> (a -> IO a) -> a -> IO a
 while predicate action value = do
     newValue <- action value
