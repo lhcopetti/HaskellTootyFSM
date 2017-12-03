@@ -1,30 +1,10 @@
 module Main where
 
 import Lib
+import TootyFSM
 import Text.Printf (printf)
 import Control.Monad (foldM)
 import Control.Concurrent (threadDelay)
-
-data TootyState
-    = IdleState
-    | PursuitState
-    | AttackState
-    | RestState
-    | HitState
-    | DyingState
-    | DeadState
-    deriving (Show, Eq)
-
-data TootyEvent
-    = ChaseEvent
-    | CrocIsCloseEvent
-    | TootyIsTiredEvent
-    | TootyIsHitEvent
-    | DieEvent
-    | DeadEvent
-    deriving (Show, Eq)
-
-type FSM s e = s -> e -> IO s
 
 class VarSum r where 
     variadicSum :: Integer -> r
