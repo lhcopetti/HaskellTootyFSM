@@ -2,6 +2,7 @@ module Main where
 
 import Lib
 import TootyFSM
+import Console
 import Text.Printf (printf)
 import Control.Monad (foldM)
 import Control.Concurrent (threadDelay)
@@ -62,23 +63,18 @@ getNextEventForState IdleState = return ChaseEvent
 
 getNextEventForState DyingState = return DeadEvent
 
-getNextEventForState PursuitState = do 
-    putStrLn "Do you wish to get close to Tooty? (Y/n)"
-    result <- getChar
-    if result == 'Y' then 
+getNextEventForState PursuitState = do
+    result <- prompt "Do you wish to get close to Tooty"
+    if result then 
         return CrocIsCloseEvent
     else
         return TootyIsTiredEvent
 
 getNextEventForState RestState = do
-    putStrLn "Do you wish to hit Tooty? (Y/n)"
-    result <- getChar
-    if result == 'Y' then
-        return TootyIsHitEvent
-    else 
-        return ChaseEvent
+    result <- prompt "Do you wish to hit Tooty"
+    return $ if result then TootyIsHitEvent else ChaseEvent
 
-getNextEventForState _ = return DieEvent 
+getNextEventForState _ = return DieEvent
 
 runTootyFSM :: TootyState -> IO TootyState
 runTootyFSM s = do
