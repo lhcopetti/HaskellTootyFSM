@@ -7,15 +7,6 @@ import Text.Printf (printf)
 import Control.Monad (foldM)
 import Control.Concurrent (threadDelay)
 
-class VarSum r where 
-    variadicSum :: Integer -> r
-
-instance VarSum Integer where 
-    variadicSum = id
-
-instance (Integral a, VarSum r) => VarSum (a -> r) where
-    variadicSum x = variadicSum . (x+) . toInteger
-
 tootyFSM :: FSM TootyState TootyEvent
 tootyFSM IdleState ChaseEvent = do 
     putStrLn "--- Tooty is chasing after Croc!"
