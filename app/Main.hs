@@ -24,9 +24,7 @@ tootyFSM AttackState _ = do
     putStrLn "--- Tooty hits Croc!"
     return RestState
 
-tootyFSM RestState TootyIsHitEvent = do 
-    return DyingState
-
+tootyFSM RestState TootyIsHitEvent = return DyingState
 tootyFSM DyingState _ = return DeadState
 
 
@@ -71,8 +69,7 @@ runTootyFSM :: TootyState -> IO TootyState
 runTootyFSM s = do
     runTootyState s
     event <- getNextEventForState s
-    s' <- tootyFSM s event
-    return s'
+    tootyFSM s event
 
 
 main :: IO ()
