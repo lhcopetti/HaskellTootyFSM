@@ -24,6 +24,8 @@ tootyFSM AttackState _ = do
     return RestState
 
 tootyFSM RestState TootyIsHitEvent = return DyingState
+tootyFSM RestState _ = return PursuitState
+
 tootyFSM DyingState _ = return DeadState
 
 
