@@ -8,7 +8,7 @@ data TootyState
     | HitState
     | DyingState
     | DeadState
-    deriving (Show, Eq)
+    deriving (Show, Eq, Ord)
 
 data TootyEvent
     = ChaseEvent

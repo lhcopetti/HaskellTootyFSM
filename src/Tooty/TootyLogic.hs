@@ -6,26 +6,20 @@ import Control.Concurrent (threadDelay)
 import Text.Printf (printf)
 import Console (prompt)
 
+import Data.Map (Map)
+import qualified Data.Map as M
+
 checkTootyFSMTransition :: FSM TootyState TootyEvent
 
-checkTootyFSMTransition IdleState ChaseEvent = do 
-    putStrLn "--- Tooty is chasing after Croc!"
-    return PursuitState
+checkTootyFSMTransition IdleState ChaseEvent = return PursuitState
 
-checkTootyFSMTransition PursuitState CrocIsCloseEvent = do 
-    putStrLn "--- Croc is dangerously close to Tooty!"
-    return AttackState
+checkTootyFSMTransition PursuitState CrocIsCloseEvent = return AttackState
+checkTootyFSMTransition PursuitState TootyIsTiredEvent = return RestState
 
-checkTootyFSMTransition PursuitState TootyIsTiredEvent = do 
-    putStrLn "--- Tooty grows tired of chasing after Croc!"
-    return RestState
-
-checkTootyFSMTransition AttackState _ = do 
-    putStrLn "--- Tooty hits Croc!"
-    return RestState
+checkTootyFSMTransition AttackState _ = return RestState
 
 checkTootyFSMTransition RestState TootyIsHitEvent = return DyingState
-checkTootyFSMTransition RestState _ = return PursuitState
+checkTootyFSMTransition RestState _ =               return PursuitState
 
 checkTootyFSMTransition DyingState _ = return DeadState
 
@@ -39,14 +33,19 @@ loggingFSM fsm s e = do
     printf "%s × %s → %s\n" (show s) (show e) (show s')
     return s'
 
+stateAction :: Map TootyState String
+stateAction = M.fromList    [ (IdleState, "Tooty is doing nothing!")
+                            , (PursuitState, "Tooty is chasing Croc!")
+                            , (AttackState, "Tooty hits Croc!")
+                            , (RestState, "Tooty is resting!")
+                            , (DyingState, "Tooty has been defeated!")
+                            ]
+
 execTootyState :: TootyState -> IO ()
-execTootyState IdleState = putStrLn "Tooty is doing nothing!"
-execTootyState PursuitState = putStrLn "Tooty is running after Croc!"
-execTootyState AttackState = putStrLn "Tooty will hit Croc!"
-execTootyState RestState = do 
-    putStrLn "Tooty is resting!"
-    threadDelay (2 * 10^6)
-execTootyState DyingState = putStrLn "Tooty has been defeated!"
+execTootyState s = do
+    let msg = M.findWithDefault defValue s stateAction
+    putStrLn $ "[" ++ show s ++ "] - " ++ " " ++ msg
+    where defValue = "A message for " ++ show s ++ " was not found."
 
 
 getNextEventForState :: TootyState -> IO TootyEvent
