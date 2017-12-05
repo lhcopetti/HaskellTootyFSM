@@ -4,27 +4,13 @@ import Console
 import Control.Concurrent (threadDelay)
 import Control.Monad (foldM)
 import Text.Printf (printf)
+import Tooty.TootyDefs
 
-data TootyState
-    = IdleState
-    | PursuitState
-    | AttackState
-    | RestState
-    | HitState
-    | DyingState
-    | DeadState
-    deriving (Show, Eq)
+startFSM :: TootyState
+startFSM = IdleState
 
-data TootyEvent
-    = ChaseEvent
-    | CrocIsCloseEvent
-    | TootyIsTiredEvent
-    | TootyIsHitEvent
-    | DieEvent
-    | DeadEvent
-    deriving (Show, Eq)
-
-type FSM s e = s -> e -> IO s
+endFSM :: TootyState
+endFSM = DeadState
 
 tootyFSM :: FSM TootyState TootyEvent
 tootyFSM IdleState ChaseEvent = do 

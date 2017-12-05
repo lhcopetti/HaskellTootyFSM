@@ -7,8 +7,7 @@ import TootyFSM
 main :: IO ()
 main = do
     putStrLn "The beginning!"
-    let initialState = IdleState
-    while (/= DeadState) runTootyFSM initialState
+    while (/= endFSM) runTootyFSM startFSM
     putStrLn "The end!"
 
 while :: (a -> Bool) -> (a -> IO a) -> a -> IO a
