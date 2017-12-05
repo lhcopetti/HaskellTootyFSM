@@ -6,27 +6,28 @@ import Control.Concurrent (threadDelay)
 import Text.Printf (printf)
 import Console (prompt)
 
-tootyFSM :: FSM TootyState TootyEvent
-tootyFSM IdleState ChaseEvent = do 
+checkTootyFSMTransition :: FSM TootyState TootyEvent
+
+checkTootyFSMTransition IdleState ChaseEvent = do 
     putStrLn "--- Tooty is chasing after Croc!"
     return PursuitState
 
-tootyFSM PursuitState CrocIsCloseEvent = do 
+checkTootyFSMTransition PursuitState CrocIsCloseEvent = do 
     putStrLn "--- Croc is dangerously close to Tooty!"
     return AttackState
 
-tootyFSM PursuitState TootyIsTiredEvent = do 
+checkTootyFSMTransition PursuitState TootyIsTiredEvent = do 
     putStrLn "--- Tooty grows tired of chasing after Croc!"
     return RestState
 
-tootyFSM AttackState _ = do 
+checkTootyFSMTransition AttackState _ = do 
     putStrLn "--- Tooty hits Croc!"
     return RestState
 
-tootyFSM RestState TootyIsHitEvent = return DyingState
-tootyFSM RestState _ = return PursuitState
+checkTootyFSMTransition RestState TootyIsHitEvent = return DyingState
+checkTootyFSMTransition RestState _ = return PursuitState
 
-tootyFSM DyingState _ = return DeadState
+checkTootyFSMTransition DyingState _ = return DeadState
 
 
 runFSM :: Foldable f => FSM s e -> s -> f e -> IO s
