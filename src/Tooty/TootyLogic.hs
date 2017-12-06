@@ -30,7 +30,7 @@ runFSM = foldM
 loggingFSM :: (Show s, Show e) => FSM s e -> FSM s e
 loggingFSM fsm s e = do 
     s' <- fsm s e
-    printf "%s × %s → %s\n" (show s) (show e) (show s')
+    printf "-------> %s × %s → %s\n" (show s) (show e) (show s')
     return s'
 
 stateAction :: Map TootyState String

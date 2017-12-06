@@ -13,4 +13,4 @@ runTootyFSM :: TootyState -> IO TootyState
 runTootyFSM s = do
     execTootyState s
     event <- getNextEventForState s
-    checkTootyFSMTransition s event 
+    loggingFSM checkTootyFSMTransition s event 
