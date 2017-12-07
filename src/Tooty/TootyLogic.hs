@@ -14,15 +14,20 @@ checkTootyFSMTransition :: FSM TootyState TootyEvent
 checkTootyFSMTransition DyingState _    = return DeadState
 checkTootyFSMTransition _ DieEvent      = return DeadState
 
-checkTootyFSMTransition IdleState ChaseEvent = return PursuitState
+checkTootyFSMTransition IdleState ChaseEvent = return $ PursuitState tootyInitialHealth
 
-checkTootyFSMTransition PursuitState CrocIsCloseEvent = return AttackState
-checkTootyFSMTransition PursuitState TootyIsTiredEvent = return RestState
+checkTootyFSMTransition (PursuitState life) CrocIsCloseEvent = return $ AttackState life
+checkTootyFSMTransition (PursuitState life) TootyIsTiredEvent = return $ RestState life
 
-checkTootyFSMTransition AttackState _ = return RestState
+checkTootyFSMTransition (AttackState life) _ = return $ RestState life
 
-checkTootyFSMTransition RestState TootyIsHitEvent = return DyingState
-checkTootyFSMTransition RestState _ =               return PursuitState
+checkTootyFSMTransition (RestState life) TootyIsHitEvent
+    | newLife > 0 = return (PursuitState newLife)
+    | otherwise = return DyingState
+        where 
+            newLife = life - 1
+
+checkTootyFSMTransition (RestState life) _ =               return $ PursuitState life
 
 
 runFSM :: Foldable f => FSM s e -> s -> f e -> IO s
@@ -35,29 +40,29 @@ loggingFSM fsm s e = do
     return s'
 
 execTootyState :: TootyState -> IO ()
-execTootyState IdleState = putStrLn "Tooty is doing nothing!"
-execTootyState PursuitState = putStrLn "Tooty is chasing Croc!"
-execTootyState AttackState = putStrLn "Tooty hits Croc!"
-execTootyState DyingState = putStrLn "Tooty has been defeated!"
+execTootyState IdleState        = putStrLn "Tooty is doing nothing!"
+execTootyState (PursuitState _) = putStrLn "Tooty is chasing Croc!"
+execTootyState (AttackState _)  = putStrLn "Tooty hits Croc!"
+execTootyState DyingState       = putStrLn "Tooty has been defeated!"
 
-execTootyState RestState = do
+execTootyState (RestState _) = do
     delayWithPrompt "Tooty is resting!" 10
     putStrLn ""
 
 
 getNextEventForState :: TootyState -> IO TootyEvent
-getNextEventForState IdleState      = return ChaseEvent
-getNextEventForState DyingState     = return DeadEvent
-getNextEventForState AttackState    = return TootyIsTiredEvent
+getNextEventForState IdleState          = return ChaseEvent
+getNextEventForState DyingState         = return DeadEvent
+getNextEventForState (AttackState _)    = return TootyIsTiredEvent
 
-getNextEventForState PursuitState = do
+getNextEventForState (PursuitState _)   = do
     result <- prompt "Do you wish to get close to Tooty"
     if result then 
         return CrocIsCloseEvent
     else
         return TootyIsTiredEvent
 
-getNextEventForState RestState = do
+getNextEventForState (RestState _ )     = do
     result <- prompt "Do you wish to hit Tooty"
     return $ if result then TootyIsHitEvent else ChaseEvent
 

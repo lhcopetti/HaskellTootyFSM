@@ -1,11 +1,16 @@
 module Tooty.TootyDefs where
 
+type TootyLife = Int
+
+tootyInitialHealth :: TootyLife
+tootyInitialHealth = 3
+
 data TootyState
     = IdleState
-    | PursuitState
-    | AttackState
-    | RestState
-    | HitState
+    | PursuitState  TootyLife
+    | AttackState   TootyLife
+    | RestState     TootyLife
+    | HitState      TootyLife
     | DyingState
     | DeadState
     deriving (Show, Eq, Ord)
