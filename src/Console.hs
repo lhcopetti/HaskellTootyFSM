@@ -27,7 +27,7 @@ printLoadingAction' prompt x = do
         where
             message = prompt ++ "... " ++ [head x]
 
-delayWithPrompt :: String -> Int -> IO String
+delayWithPrompt :: String -> Int -> IO ()
 delayWithPrompt msg count = do 
-    whileCounter count (printLoadingAction' msg) "\\|/-"
-    return "123"
+    whileCounter count (printLoadingAction' msg) (cycle "\\|/-")
+    return ()
