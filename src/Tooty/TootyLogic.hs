@@ -14,12 +14,12 @@ checkTootyFSMTransition :: FSM TootyState TootyEvent
 checkTootyFSMTransition DyingState _    = return DeadState
 checkTootyFSMTransition _ DieEvent      = return DeadState
 
-checkTootyFSMTransition IdleState ChaseEvent = return $ PursuitState tootyInitialHealth
+checkTootyFSMTransition IdleState ChaseEvent = return (PursuitState tootyInitialHealth)
 
-checkTootyFSMTransition (PursuitState life) CrocIsCloseEvent = return $ AttackState life
-checkTootyFSMTransition (PursuitState life) TootyIsTiredEvent = return $ RestState life
+checkTootyFSMTransition (PursuitState life) CrocIsCloseEvent = return (AttackState life)
+checkTootyFSMTransition (PursuitState life) TootyIsTiredEvent = return (RestState life)
 
-checkTootyFSMTransition (AttackState life) _ = return $ RestState life
+checkTootyFSMTransition (AttackState life) _ = return (RestState life)
 
 checkTootyFSMTransition (RestState life) TootyIsHitEvent
     | newLife > 0 = return (PursuitState newLife)
@@ -27,7 +27,7 @@ checkTootyFSMTransition (RestState life) TootyIsHitEvent
         where 
             newLife = life - 1
 
-checkTootyFSMTransition (RestState life) _ =               return $ PursuitState life
+checkTootyFSMTransition (RestState life) _ = return $ PursuitState life
 
 
 runFSM :: Foldable f => FSM s e -> s -> f e -> IO s

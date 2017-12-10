@@ -21,9 +21,9 @@ printLoadingAction x = do
 
 printLoadingAction' :: String -> String -> IO String
 printLoadingAction' prompt x = do
-    putStr $ "\r" ++ message
+    putStr ("\r" ++ message)
     threadDelay 500000
-    return $ drop 1 x
+    return (drop 1 x)
         where
             message = prompt ++ "... " ++ [head x]
 
