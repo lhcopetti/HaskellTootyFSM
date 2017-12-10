@@ -46,7 +46,7 @@ execTootyState (AttackState _)  = putStrLn "Tooty hits Croc!"
 execTootyState DyingState       = putStrLn "Tooty has been defeated!"
 
 execTootyState (RestState _) = do
-    delayWithPrompt "Tooty is resting!" 10
+    delayWithPrompt "Tooty is resting!" 8
     putStrLn ""
 
 
