@@ -50,4 +50,4 @@ Tooty is chasing Croc!
 Do you wish to get close to Tooty (Y/n)?
 ```
 
-OBS: Use the [Git Bash Shell](https://git-for-windows.github.io/) should you have that installed (seriously, why wouldn't you?). After the code page configuration, I couldn't notice any misbehavior regarding the enconding part.
+Use the [Git Bash Shell](https://git-for-windows.github.io/) should you have that installed (seriously, why wouldn't you?). After the code page configuration, I couldn't notice any misbehavior regarding the enconding part.
